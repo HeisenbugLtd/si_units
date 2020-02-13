@@ -1,6 +1,6 @@
 # SI Units
 
-Utility library to pretty print physical units in proper metric units.
+Utility library to pretty print physical values in properly scaled metric (SI) units.
 
 ### Problem
 
