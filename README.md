@@ -1,4 +1,4 @@
-# SI Units
+![SI Units](assets/img/logo.png)
 
 Utility library to pretty print physical values in properly scaled metric (SI) units.
 
