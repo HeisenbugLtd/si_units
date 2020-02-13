@@ -68,7 +68,7 @@ instead.
 
 ### (More) Examples
 
-You may have noticed that the instantiation above used a package name `SI_Units.Metric`.  Now, if you'd expect a child package named `Imperial`, you'd be wrong.  After all, the library is called "SI Units", so sorry, I am not supporting things foot pound per square inch.  But, besided decimal (what we usually call metric), there's also an official definition for binary prefixes.  So, yes, the other child package hierarchy is `SI_Units.Binary` and provides a similar[1] functionality for values that are better written with binary prefixes:
+You may have noticed that the instantiation above used a package name `SI_Units.Metric`.  Now, if you'd expect a child package named `Imperial`, you'd be wrong.  After all, the library is called "SI Units", so sorry, I am not supporting things like *foot pound per square inch*.  But, besided decimal (what we usually call metric), there's also an official definition for binary prefixes.  So, yes, the other child package hierarchy is `SI_Units.Binary` and provides a similar[1] functionality for values that are better written with binary prefixes:
 
 ```ada
 function Image is new SI_Units.Binary.Mod_Image (Item        => Transmission_Speed,
