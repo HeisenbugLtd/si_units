@@ -1,4 +1,4 @@
-![SI Units](assets/img/logo.png)
+![SI Units](https://raw.githubusercontent.com/HeisenbugLtd/web-resources/master/assets/img/logo-si_units.png)
 
 Utility library to pretty print physical values in properly scaled [metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
 
