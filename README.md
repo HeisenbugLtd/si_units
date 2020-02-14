@@ -1,6 +1,6 @@
 ![SI Units](assets/img/logo.png)
 
-Utility library to pretty print physical values in properly scaled metric (SI) units.
+Utility library to pretty print physical values in properly scaled [metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
 
 ### Problem
 
@@ -83,7 +83,7 @@ We got you covered, `SI_Units.Metric.Scaling` does that for you.  Actually from 
 
 ### Unit names
 
-Unit names given in instantiations are standard strings, except for a tiny, little `Dynamic_Predicate` that states it can either be completely empty or shall not start with white space.  For any proper use, this predicate can be ignored.  I can't think of any proper use case that would warrant the use of a vertical tab between the value and the actual unit.  In fact, both will be separated by a non-breaking space for better readability and to confirm with what SI has to say about it.
+Unit names given in instantiations are standard strings, except for a tiny, little `Dynamic_Predicate` that states it can either be completely empty or shall not start with white space.  For any proper use, this predicate can be ignored.  I can't think of any use case that would warrant the use of a vertical tab between the value and the actual unit.  In fact, the `Image` subprograms are designed to work in a way that both will be separated by a non-breaking space for better readability and to confirm with what [SI has to say about it](https://www.nist.gov/pml/weights-and-measures/writing-metric-units).
 
 For your convenience, all the names of the SI defined physical units are declared in `SI_Units.Names`.
 
