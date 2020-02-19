@@ -64,7 +64,8 @@ procedure Main_SI_Units_Test is
          if Passed then
             Num_Succeeded := Num_Succeeded + 1;
          else
-            Ada.Text_IO.Put_Line ("Test_Case failed: " & Message);
+            Ada.Text_IO.Put_Line
+              ("Test_Case" & Num_Test_Cases'Image & " failed: " & Message);
          end if;
       end Add;
 
@@ -124,35 +125,159 @@ begin
       Message => "Fixed_MI (Scalar'Last)");
 
    declare
+      Normal_Suffix : constant String := No_Break_Space & SI_Units.Names.Ampere;
+      Kilo_Suffix   : constant String := No_Break_Space & "k" & SI_Units.Names.Ampere;
+
       type Loop_Iteration is range 1 .. 32;
+      type Expected_List is array (Loop_Iteration) of not null access String;
       Median  : constant Scalar := 1000.0;
       Operand : Scalar          := 1.0;
    begin
-      for Exponent in reverse Loop_Iteration loop
-         Ada.Text_IO.Put_Line (Fixed_MI (Median - Operand));
-         Operand := Operand / 2.0;
-      end loop;
+      declare
+         --  Known memory leak due to string creation. As this is a test program
+         --  only run once we don't care.
+         Expected_Results : constant Expected_List :=
+           (32      => new String'("999.000000" & Normal_Suffix),
+            31      => new String'("999.500000" & Normal_Suffix),
+            30      => new String'("999.750000" & Normal_Suffix),
+            29      => new String'("999.875000" & Normal_Suffix),
+            28      => new String'("999.937500" & Normal_Suffix),
+            27      => new String'("999.968750" & Normal_Suffix),
+            26      => new String'("999.984375" & Normal_Suffix),
+            25      => new String'("999.992188" & Normal_Suffix),
+            24      => new String'("999.996094" & Normal_Suffix),
+            23      => new String'("999.998047" & Normal_Suffix),
+            22      => new String'("999.999023" & Normal_Suffix),
+            21      => new String'("999.999512" & Normal_Suffix),
+            20      => new String'("999.999756" & Normal_Suffix),
+            19      => new String'("999.999878" & Normal_Suffix),
+            18      => new String'("999.999939" & Normal_Suffix),
+            17      => new String'("999.999969" & Normal_Suffix),
+            16      => new String'("999.999985" & Normal_Suffix),
+            15      => new String'("999.999992" & Normal_Suffix),
+            14      => new String'("999.999996" & Normal_Suffix),
+            13      => new String'("999.999998" & Normal_Suffix),
+            12      => new String'("999.999999" & Normal_Suffix),
+            1 .. 11 => new String'("1.000000"   & Kilo_Suffix));
+      begin
+         for Exponent in reverse Loop_Iteration loop
+            Test_Cases.Add
+              (Passed  => Fixed_MI (Median - Operand) = Expected_Results (Exponent).all,
+               Message => "Fixed_MI (Median - Operand)/" & Exponent'Image);
+            Operand := Operand / 2.0;
+         end loop;
+      end;
 
-      Ada.Text_IO.Put_Line (Fixed_MI (Median));
+      Test_Cases.Add
+        (Passed  => Fixed_MI (Median) = "1.000000" & No_Break_Space & "k" & SI_Units.Names.Ampere,
+         Message => "Fixed_MI (Median)");
 
-      for Exponent in Loop_Iteration loop
-         Ada.Text_IO.Put_Line (Fixed_MI (Median + Operand));
-         Operand := Operand * 2.0;
-      end loop;
+      declare
+         --  Known memory leak due to string creation. As this is a test program
+         --  only run once we don't care.
+         Expected_Results : constant Expected_List :=
+           (1 .. 22 => new String'("1.000000" & Kilo_Suffix),
+            23      => new String'("1.000001" & Kilo_Suffix),
+            24      => new String'("1.000002" & Kilo_Suffix),
+            25      => new String'("1.000004" & Kilo_Suffix),
+            26      => new String'("1.000008" & Kilo_Suffix),
+            27      => new String'("1.000016" & Kilo_Suffix),
+            28      => new String'("1.000031" & Kilo_Suffix),
+            29      => new String'("1.000062" & Kilo_Suffix),
+            30      => new String'("1.000125" & Kilo_Suffix),
+            31      => new String'("1.000250" & Kilo_Suffix),
+            32      => new String'("1.000500" & Kilo_Suffix));
+      begin
+         for Exponent in Loop_Iteration loop
+            Test_Cases.Add
+              (Passed  => Fixed_MI (Median + Operand) = Expected_Results (Exponent).all,
+               Message => "Fixed_MI (Median + Operand)/" & Exponent'Image);
+            Operand := Operand * 2.0;
+         end loop;
+      end;
    end;
 
    declare
+      subtype Loop_Iteration is Natural range 1 .. 18;
+      type Less_Equal_Greater is (LT, EQ, GT);
+      type Expected_List is array (Loop_Iteration,
+                                   Less_Equal_Greater) of not null access String;
+
       Median    : constant Scalar := 1000.0;
       LT_Median : constant Scalar := Median - Scalar'Small;
       GT_Median : constant Scalar := Median + Scalar'Small;
+      Normal_Suffix : constant String := No_Break_Space & SI_Units.Names.Ampere;
+      Kilo_Suffix   : constant String := No_Break_Space & "k" & SI_Units.Names.Ampere;
+
+      Expected_Results : constant Expected_List :=
+        (01 => (LT => new String'("1.0"                    & Kilo_Suffix),
+                EQ => new String'("1.0"                    & Kilo_Suffix),
+                GT => new String'("1.0"                    & Kilo_Suffix)),
+         02 => (LT => new String'("1.00"                   & Kilo_Suffix),
+                EQ => new String'("1.00"                   & Kilo_Suffix),
+                GT => new String'("1.00"                   & Kilo_Suffix)),
+         03 => (LT => new String'("1.000"                  & Kilo_Suffix),
+                EQ => new String'("1.000"                  & Kilo_Suffix),
+                GT => new String'("1.000"                  & Kilo_Suffix)),
+         04 => (LT => new String'("1.0000"                 & Kilo_Suffix),
+                EQ => new String'("1.0000"                 & Kilo_Suffix),
+                GT => new String'("1.0000"                 & Kilo_Suffix)),
+         05 => (LT => new String'("1.00000"                & Kilo_Suffix),
+                EQ => new String'("1.00000"                & Kilo_Suffix),
+                GT => new String'("1.00000"                & Kilo_Suffix)),
+         06 => (LT => new String'("1.000000"               & Kilo_Suffix),
+                EQ => new String'("1.000000"               & Kilo_Suffix),
+                GT => new String'("1.000000"               & Kilo_Suffix)),
+         07 => (LT => new String'("1.0000000"              & Kilo_Suffix),
+                EQ => new String'("1.0000000"              & Kilo_Suffix),
+                GT => new String'("1.0000000"              & Kilo_Suffix)),
+         08 => (LT => new String'("1.00000000"             & Kilo_Suffix),
+                EQ => new String'("1.00000000"             & Kilo_Suffix),
+                GT => new String'("1.00000000"             & Kilo_Suffix)),
+         09 => (LT => new String'("1.000000000"            & Kilo_Suffix),
+                EQ => new String'("1.000000000"            & Kilo_Suffix),
+                GT => new String'("1.000000000"            & Kilo_Suffix)),
+         10 => (LT => new String'("999.9999999998"         & Normal_Suffix),
+                EQ => new String'("1.0000000000"           & Kilo_Suffix),
+                GT => new String'("1.0000000000"           & Kilo_Suffix)),
+         11 => (LT => new String'("999.99999999977"        & Normal_Suffix),
+                EQ => new String'("1.00000000000"          & Kilo_Suffix),
+                GT => new String'("1.00000000000"          & Kilo_Suffix)),
+         12 => (LT => new String'("999.999999999767"       & Normal_Suffix),
+                EQ => new String'("1.000000000000"         & Kilo_Suffix),
+                GT => new String'("1.000000000000"         & Kilo_Suffix)),
+         13 => (LT => new String'("999.9999999997672"      & Normal_Suffix),
+                EQ => new String'("1.0000000000000"        & Kilo_Suffix),
+                GT => new String'("1.0000000000002"        & Kilo_Suffix)),
+         14 => (LT => new String'("999.99999999976717"     & Normal_Suffix),
+                EQ => new String'("1.00000000000000"       & Kilo_Suffix),
+                GT => new String'("1.00000000000023"       & Kilo_Suffix)),
+         15 => (LT => new String'("999.999999999767169"    & Normal_Suffix),
+                EQ => new String'("1.000000000000000"      & Kilo_Suffix),
+                GT => new String'("1.000000000000233"      & Kilo_Suffix)),
+         16 => (LT => new String'("999.9999999997671690"   & Normal_Suffix),
+                EQ => new String'("1.0000000000000000"     & Kilo_Suffix),
+                GT => new String'("1.0000000000002328"     & Kilo_Suffix)),
+         17 => (LT => new String'("999.99999999976716900"  & Normal_Suffix),
+                EQ => new String'("1.00000000000000000"    & Kilo_Suffix),
+                GT => new String'("1.00000000000023283"    & Kilo_Suffix)),
+         18 => (LT => new String'("999.999999999767169000" & Normal_Suffix),
+                EQ => new String'("1.000000000000000000"   & Kilo_Suffix),
+                GT => new String'("1.000000000000232830"   & Kilo_Suffix)));
    begin
-      for Aft in 1 .. 18 loop
-         Ada.Text_IO.Put_Line ("< 1000.0: " & Fixed_MI (Value => LT_Median,
-                                                        Aft   => Aft));
-         Ada.Text_IO.Put_Line ("= 1000.0: " & Fixed_MI (Value => Median,
-                                                        Aft   => Aft));
-         Ada.Text_IO.Put_Line ("> 1000.0: " & Fixed_MI (Value => GT_Median,
-                                                        Aft   => Aft));
+      for Aft in Loop_Iteration loop
+         Test_Cases.Add
+           (Passed  => Fixed_MI (Value => LT_Median,
+                                 Aft   => Aft) = Expected_Results (Aft, LT).all,
+            Message => "Fixed_MI (Value => LT_Median, Aft =>" & Aft'Image & ")");
+         Test_Cases.Add
+           (Passed  => Fixed_MI (Value => Median,
+                                 Aft   => Aft) = Expected_Results (Aft, EQ).all,
+            Message => "Fixed_MI (Value => Median, Aft =>" & Aft'Image & ")");
+         Test_Cases.Add
+           (Passed  => Fixed_MI (Value => GT_Median,
+                                 Aft   => Aft) = Expected_Results (Aft, GT).all,
+            Message => "Fixed_MI (Value => GT_Median, Aft =>" & Aft'Image & ")");
       end loop;
    end;
 
@@ -360,17 +485,12 @@ begin
 
    Print_Test_Summary :
    declare
-      Total : Natural := Test_Cases.Total;
+      Total  : Natural := Test_Cases.Total;
       Passed : Natural := Test_Cases.Passed;
    begin
       Ada.Text_IO.Put_Line
-        (Passed'Image & " out of" & Total'Image & " tests succeeded.");
-
-      if Test_Cases.Total = Test_Cases.Passed then
-         Ada.Text_IO.Put_Line ("<OK>");
-      else
-         Ada.Text_IO.Put_Line ("<Failed>");
-      end if;
+        ("Test results:" & Passed'Image & " out of" & Total'Image & " succeeded.");
+      Ada.Text_IO.Put_Line (if Passed = Total then "<OK>" else "<FAILED>");
    end Print_Test_Summary;
 
 end Main_SI_Units_Test;
