@@ -8,6 +8,7 @@
 pragma License (Unrestricted);
 
 with Ada.Characters.Latin_1;
+with Ada.Command_Line;
 with Ada.Text_IO;
 with SI_Units.Binary.Scaling;
 with SI_Units.Metric.Scaling;
@@ -491,6 +492,10 @@ begin
       Ada.Text_IO.Put_Line
         ("Test results:" & Passed'Image & " out of" & Total'Image & " succeeded.");
       Ada.Text_IO.Put_Line (if Passed = Total then "<OK>" else "<FAILED>");
+
+      Ada.Command_Line.Set_Exit_Status (if Passed = Total
+                                        then Ada.Command_Line.Success
+                                        else Ada.Command_Line.Failure);
    end Print_Test_Summary;
 
 end Main_SI_Units_Test;
