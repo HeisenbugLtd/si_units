@@ -17,8 +17,8 @@ jobs:
         tag: # Those are alire's dockerhub alire/gnat:tag machines
           - centos-latest-community-2019
           - community-current
-          - debian-stable
-          - ubuntu-lts
+          #- debian-stable # disabled ATM, build gets stuck
+          #- ubuntu-lts # disabled ATM, build gets stuck
 
     steps:
       - name: Check out repository
