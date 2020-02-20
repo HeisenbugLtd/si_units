@@ -2,6 +2,8 @@
 
 Utility library to pretty print physical values in properly scaled [metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
 
+![Build Linux](https://github.com/HeisenbugLtd/si_units/workflows/Build%20Linux/badge.svg)
+
 ### Problem
 
 Assuming you're writing software that deals with real world values (like frequency, speed, distance, pressure, etc. pp.), at some point you probably want to print values of such types.  To be nice to the user, such values should be properly formatted.  Ada provides formatting libraries (like `Float_Text_IO`, or even the simple `'Image` attribute) for that purpose, but these do not scale input values, they plainly output whatever you give them in whatever formatting you requested.  So, if you are using a base value of "m" for your distance type, a distance of 42.0 km will be output as something like
