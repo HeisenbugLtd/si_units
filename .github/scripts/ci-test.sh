@@ -7,5 +7,5 @@ set -o errexit
 set -o nounset
 
 echo "Running tests:"
-./obj/main_si_units_tests
+./obj/main_si_units_test
 # Test subprogram sets exit status depending on if all tests succeeded or not.
