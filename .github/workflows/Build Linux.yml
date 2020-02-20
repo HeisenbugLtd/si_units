@@ -27,11 +27,11 @@ jobs:
         run: docker pull alire/gnat:${{ matrix.tag }}
       - name: Build
         run: >
-          docker run -v${PWD}:/work -w /work
+          docker run -v${PWD}:/si_units -w /si_units
           -e "BRANCH=${{ github.base_ref }}"
           alire/gnat:${{ matrix.tag }} bash .github/scripts/ci-build.sh
       - name: Run tests
         run: >
-          docker run -v${PWD}:/work -w /work
+          docker run -v${PWD}:/si_units -w /si_units
           -e "BRANCH=${{ github.base_ref }}"
           alire/gnat:${{ matrix.tag }} bash .github/scripts/ci-test.sh
