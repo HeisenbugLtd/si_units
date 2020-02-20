@@ -15,9 +15,7 @@ pragma License (Unrestricted);
 --  Omega.  The library itself is unicode agnostic, so you can just instantiate
 --  your Image subprograms with the proper UTF-8 string.
 --------------------------------------------------------------------------------
-package SI_Units.Names with
-  Preelaborate => True
-is
+package SI_Units.Names is
 
    --  Unit names (as defined by SI).
    Ampere         : constant Unit_Name;
