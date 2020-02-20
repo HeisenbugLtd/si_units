@@ -15,9 +15,7 @@ pragma License (Unrestricted);
 --  Omega.  The library itself is unicode agnostic, so you can just instantiate
 --  your Image subprograms with the proper UTF-8 string.
 --------------------------------------------------------------------------------
-package SI_Units.Names with
-  Preelaborate => True
-is
+package SI_Units.Names is
 
    --  Unit names (as defined by SI).
    Ampere         : constant Unit_Name;
@@ -38,7 +36,7 @@ is
    Metre          : constant Unit_Name;
    Mole           : constant Unit_Name;
    Newton         : constant Unit_Name;
-   Ohm            : constant Unit_Name; --  Here: "Ohm", not the greek letter Omega.
+   Ohm            : constant Unit_Name;
    Pascal         : constant Unit_Name;
    Percent        : constant Unit_Name;
    Radian         : constant Unit_Name;
@@ -57,7 +55,10 @@ private
    Becquerel      : constant Unit_Name := "Bq";
    Candela        : constant Unit_Name := "cd";
    Coulomb        : constant Unit_Name := "C";
-   Degree_Celsius : constant Unit_Name := Degree_Sign & "C";
+   Degree_Celsius : constant Unit_Name :=
+     Character'Val (16#E2#) &
+     Character'Val (16#84#) &
+     Character'Val (16#83#);-- U+2103
    Farad          : constant Unit_Name := "F";
    Gram           : constant Unit_Name := "g";
    Gray           : constant Unit_Name := "Gy";
@@ -71,7 +72,10 @@ private
    Metre          : constant Unit_Name := "m";
    Mole           : constant Unit_Name := "mol";
    Newton         : constant Unit_Name := "N";
-   Ohm            : constant Unit_Name := "Ohm"; -- FIXME ["03A9"]
+   Ohm            : constant Unit_Name :=
+     Character'Val (16#E2#) &
+     Character'Val (16#84#) &
+     Character'Val (16#A6#); -- U+2126
    Pascal         : constant Unit_Name := "Pa";
    Percent        : constant Unit_Name := "%";
    Radian         : constant Unit_Name := "rad";

@@ -20,7 +20,7 @@ package body SI_Units.Metric is
          when femto => "f",
          when pico  => "p",
          when nano  => "n",
-         when micro => String'(1 => Micro_Sign),
+         when micro => Micro_Sign,
          when milli => "m",
          when None  => "",
          when kilo  => "k",

@@ -74,8 +74,8 @@ procedure Main_SI_Units_Test is
       function Total  return Natural is (Num_Test_Cases);
    end Test_Cases;
 
-   Micro_Sign     : Character renames Ada.Characters.Latin_1.Micro_Sign;
-   No_Break_Space : Character renames Ada.Characters.Latin_1.No_Break_Space;
+   Micro_Sign     : String := Character'Val (16#C2#) & Character'Val (16#B5#);
+   No_Break_Space : String := Character'Val (16#C2#) & Character'Val (16#A0#);
 begin
    Test_Cases.Add
      (Passed  => Modular_BI (-1) = "16.000" & No_Break_Space & "EiMod",
