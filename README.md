@@ -2,7 +2,7 @@
 
 Utility library to pretty print physical values in properly scaled [metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
 
-![Build Linux](https://github.com/HeisenbugLtd/si_units/workflows/Build%20Linux/badge.svg)
+[![Build Linux](https://github.com/HeisenbugLtd/si_units/workflows/Build%20Linux/badge.svg)](https://github.com/HeisenbugLtd/si_units/actions?query=workflow%3A%22Build+Linux%22)
 
 ### Problem
 
