@@ -64,8 +64,12 @@ package body SI_Units.Metric is
          if Temp < 1.0 then
             Handle_Small_Prefixes :
             declare
-               Threshold : constant Float_IO.General_Float := 1.0 - (0.1 ** Aft) / 2.0;
-               --  If the value is less than that it will be rounded down.
+               --  Set threshold, if the value is less than that it will be
+               --  rounded down. Please note, that an Aft of 0 will be handled
+               --  like an Aft of 1 (as we always emit at least one digit after
+               --  the decimal point.
+               Threshold : constant Float_IO.General_Float
+                 := 1.0 - (0.1 ** (Ada.Text_IO.Field'Max (1, Aft))) / 2.0;
             begin
                Find_Best_Small_Prefix :
                while Temp <= Threshold loop

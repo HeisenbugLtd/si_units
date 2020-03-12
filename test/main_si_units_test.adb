@@ -960,6 +960,13 @@ begin
       end loop;
    end loop;
 
+   Test_Cases.Add
+     (Passed  => Fixed_MI (Value => 0.55, Aft => 0) = "550.0" & No_Break_Space & "m" & SI_Units.Names.Ampere,
+      Message => "Fixed_MI (0.55)");
+   Test_Cases.Add
+     (Passed  => Fixed_MI (Value => 0.55, Aft => 1) = "550.0" & No_Break_Space & "m" & SI_Units.Names.Ampere,
+      Message => "Fixed_MI (0.55)");
+
    Print_Test_Summary :
    declare
       Total  : Natural := Test_Cases.Total;
