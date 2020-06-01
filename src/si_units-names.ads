@@ -24,7 +24,7 @@ package SI_Units.Names is
    Coulomb        : constant Unit_Name;
    Degree_Celsius : constant Unit_Name;
    Farad          : constant Unit_Name;
-   Gram           : constant Unit_Name; --  official base unit is kilogram per SI
+   Gram           : constant Unit_Name; --  official SI base unit is kilogram
    Gray           : constant Unit_Name;
    Henry          : constant Unit_Name;
    Hertz          : constant Unit_Name;
@@ -58,7 +58,7 @@ private
    Degree_Celsius : constant Unit_Name :=
      Character'Val (16#E2#) &
      Character'Val (16#84#) &
-     Character'Val (16#83#);-- U+2103
+     Character'Val (16#83#); -- U+2103
    Farad          : constant Unit_Name := "F";
    Gram           : constant Unit_Name := "g";
    Gray           : constant Unit_Name := "Gy";

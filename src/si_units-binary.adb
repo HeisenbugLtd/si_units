@@ -28,7 +28,8 @@ package body SI_Units.Binary is
    function Image (Value : in Item;
                    Aft   : in Ada.Text_IO.Field := Default_Aft) return String
    is
-      Result : String (1 .. 5 + Ada.Text_IO.Field'Max (1, Aft)); -- "1023.[...]";
+      Result : String (1 .. 5 + Ada.Text_IO.Field'Max (1, Aft));
+      --  "1023.[...]";
       Temp   : Float    := Float (Value);
       Scale  : Prefixes := None;
    begin

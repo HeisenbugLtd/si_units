@@ -7,10 +7,9 @@
 --------------------------------------------------------------------------------
 pragma License (Unrestricted);
 
-with Ada.Characters.Latin_1;
 with Ada.Command_Line;
 with Ada.Text_IO;
-with SI_Units.Binary.Scaling;
+with SI_Units.Binary;
 with SI_Units.Metric.Scaling;
 with SI_Units.Names;
 
@@ -50,8 +49,8 @@ procedure Main_SI_Units_Test is
       procedure Add (Passed  : in Boolean;
                      Message : in String);
 
-      function Total return Natural;
-      function Passed return Natural;
+      function Num_Total return Natural;
+      function Num_Passed return Natural;
 
    end Test_Cases;
 
@@ -69,16 +68,21 @@ procedure Main_SI_Units_Test is
             Num_Succeeded := Num_Succeeded + 1;
          else
             Ada.Text_IO.Put_Line
-              ("Test_Case" & Num_Test_Cases'Image & " failed: " & Message);
+              (Item =>
+                 "Test_Case" & Num_Test_Cases'Image & " failed: " & Message);
          end if;
       end Add;
 
-      function Passed return Natural is (Num_Succeeded);
-      function Total  return Natural is (Num_Test_Cases);
+      function Num_Passed return Natural is (Num_Succeeded);
+      function Num_Total  return Natural is (Num_Test_Cases);
    end Test_Cases;
 
-   Micro_Sign     : String := Character'Val (16#C2#) & Character'Val (16#B5#);
-   No_Break_Space : String := Character'Val (16#C2#) & Character'Val (16#A0#);
+   Micro_Sign     : constant String :=
+     Character'Val (16#C2#) & Character'Val (16#B5#);
+   No_Break_Space : constant String :=
+     Character'Val (16#C2#) & Character'Val (16#A0#);
+
+   type String_Access is not null access String;
 begin
    Test_Cases.Add
      (Passed  => Modular_BI (-1) = "16.000" & No_Break_Space & "EiMod",
@@ -113,27 +117,35 @@ begin
       Message => "Modular_MI (1025)");
 
    Test_Cases.Add
-     (Passed  => Fixed_MI (0.0) = "0.000000" & No_Break_Space & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (0.0) = "0.000000" & No_Break_Space & SI_Units.Names.Ampere,
       Message => "Fixed_MI (0.0)");
 
    Test_Cases.Add
-     (Passed  => Fixed_MI (Scalar'Small) = "232.830644" & No_Break_Space & "p" & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (Scalar'Small) = "232.830644" & No_Break_Space & "p" &
+        SI_Units.Names.Ampere,
       Message => "Fixed_MI (Scalar'Small)");
 
    Test_Cases.Add
-     (Passed  => Fixed_MI (Scalar'First) = "-2.147484" & No_Break_Space & "G" & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (Scalar'First) = "-2.147484" & No_Break_Space & "G" &
+        SI_Units.Names.Ampere,
       Message => "Fixed_MI (Scalar'First)");
 
    Test_Cases.Add
-     (Passed  => Fixed_MI (Scalar'Last) = "2.147484" & No_Break_Space & "G" & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (Scalar'Last) = "2.147484" & No_Break_Space & "G" &
+        SI_Units.Names.Ampere,
       Message => "Fixed_MI (Scalar'Last)");
 
    declare
       Normal_Suffix : constant String := No_Break_Space & SI_Units.Names.Ampere;
-      Kilo_Suffix   : constant String := No_Break_Space & "k" & SI_Units.Names.Ampere;
+      Kilo_Suffix   : constant String :=
+        No_Break_Space & "k" & SI_Units.Names.Ampere;
 
       type Loop_Iteration is range 1 .. 32;
-      type Expected_List is array (Loop_Iteration) of not null access String;
+      type Expected_List is array (Loop_Iteration) of String_Access;
       Median  : constant Scalar := 1000.0;
       Operand : Scalar          := 1.0;
    begin
@@ -166,14 +178,17 @@ begin
       begin
          for Exponent in reverse Loop_Iteration loop
             Test_Cases.Add
-              (Passed  => Fixed_MI (Median - Operand) = Expected_Results (Exponent).all,
+              (Passed  =>
+                 Fixed_MI (Median - Operand) = Expected_Results (Exponent).all,
                Message => "Fixed_MI (Median - Operand)/" & Exponent'Image);
             Operand := Operand / 2.0;
          end loop;
       end;
 
       Test_Cases.Add
-        (Passed  => Fixed_MI (Median) = "1.000000" & No_Break_Space & "k" & SI_Units.Names.Ampere,
+        (Passed  =>
+           Fixed_MI (Median) = "1.000000" & No_Break_Space & "k" &
+           SI_Units.Names.Ampere,
          Message => "Fixed_MI (Median)");
 
       declare
@@ -194,7 +209,8 @@ begin
       begin
          for Exponent in Loop_Iteration loop
             Test_Cases.Add
-              (Passed  => Fixed_MI (Median + Operand) = Expected_Results (Exponent).all,
+              (Passed  =>
+                 Fixed_MI (Median + Operand) = Expected_Results (Exponent).all,
                Message => "Fixed_MI (Median + Operand)/" & Exponent'Image);
             Operand := Operand * 2.0;
          end loop;
@@ -205,13 +221,14 @@ begin
       subtype Loop_Iteration is Natural range 1 .. 18;
       type Less_Equal_Greater is (LT, EQ, GT);
       type Expected_List is array (Loop_Iteration,
-                                   Less_Equal_Greater) of not null access String;
+                                   Less_Equal_Greater) of String_Access;
 
       Median    : constant Scalar := 1000.0;
       LT_Median : constant Scalar := Median - Scalar'Small;
       GT_Median : constant Scalar := Median + Scalar'Small;
       Normal_Suffix : constant String := No_Break_Space & SI_Units.Names.Ampere;
-      Kilo_Suffix   : constant String := No_Break_Space & "k" & SI_Units.Names.Ampere;
+      Kilo_Suffix   : constant String :=
+        No_Break_Space & "k" & SI_Units.Names.Ampere;
 
       Expected_Results : constant Expected_List :=
         (01 => (LT => new String'("1.0"                    & Kilo_Suffix),
@@ -273,7 +290,8 @@ begin
          Test_Cases.Add
            (Passed  => Fixed_MI (Value => LT_Median,
                                  Aft   => Aft) = Expected_Results (Aft, LT).all,
-            Message => "Fixed_MI (Value => LT_Median, Aft =>" & Aft'Image & ")");
+            Message =>
+              "Fixed_MI (Value => LT_Median, Aft =>" & Aft'Image & ")");
          Test_Cases.Add
            (Passed  => Fixed_MI (Value => Median,
                                  Aft   => Aft) = Expected_Results (Aft, EQ).all,
@@ -281,210 +299,299 @@ begin
          Test_Cases.Add
            (Passed  => Fixed_MI (Value => GT_Median,
                                  Aft   => Aft) = Expected_Results (Aft, GT).all,
-            Message => "Fixed_MI (Value => GT_Median, Aft =>" & Aft'Image & ")");
+            Message =>
+              "Fixed_MI (Value => GT_Median, Aft =>" & Aft'Image & ")");
       end loop;
    end;
 
    Test_Cases.Add
-     (Passed  => Float_MI (0.0) = "0.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (0.0) = "0.000" & No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (0.0)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (Long_Float'Safe_Small) = "0.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (Long_Float'Safe_Small) = "0.000" &
+        No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (Long_Float'Safe_Small)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (Long_Float'Safe_First) = "-inf    " & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (Long_Float'Safe_First) = "-inf    " & No_Break_Space &
+        SI_Units.Names.Volt,
       Message => "Float_MI (Long_Float'Safe_First)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (Long_Float'Safe_Last) = "+inf    " & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (Long_Float'Safe_Last) = "+inf    " &
+        No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (Long_Float'Safe_Last)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (-9.999_999_49E27) = "-inf    " & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-9.999_999_49E27) = "-inf    " & No_Break_Space &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-9.999_999_49E27)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (9.999_999_49E27) = "9999.999" & No_Break_Space & "Y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (9.999_999_49E27) = "9999.999" & No_Break_Space & "Y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (9.999_999_49E27)");
 
    --  "infinity"
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E27) = "-inf    " & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E27) = "-inf    " & No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E27)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E27) = "1000.000" & No_Break_Space & "Y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E27) = "1000.000" & No_Break_Space & "Y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E27)");
 
    --  Yotta
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E24) = "-1.000" & No_Break_Space & "Y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E24) = "-1.000" & No_Break_Space & "Y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E24)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E24) = "1.000" & No_Break_Space & "Y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E24) = "1.000" & No_Break_Space & "Y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E24)");
 
    --  Zeta
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E21) = "-1.000" & No_Break_Space & "Z" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E21) = "-1.000" & No_Break_Space & "Z" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E21)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E21) = "1.000" & No_Break_Space & "Z" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E21) = "1.000" & No_Break_Space & "Z" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E21)");
 
    --  Exa
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E18) = "-1.000" & No_Break_Space & "E" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E18) = "-1.000" & No_Break_Space & "E" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E18)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E18) = "1.000" & No_Break_Space & "E" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E18) = "1.000" & No_Break_Space & "E" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E18)");
 
    --  Peta
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E15) = "-1.000" & No_Break_Space & "P" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E15) = "-1.000" & No_Break_Space & "P" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E15)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E15) = "1.000" & No_Break_Space & "P" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E15) = "1.000" & No_Break_Space & "P" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E15)");
 
    --  Tera
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E12) = "-1.000" & No_Break_Space & "T" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E12) = "-1.000" & No_Break_Space & "T" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E12)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E12) = "1.000" & No_Break_Space & "T" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E12) = "1.000" & No_Break_Space & "T" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E12)");
 
    --  Giga
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E9) = "-1.000" & No_Break_Space & "G" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E9) = "-1.000" & No_Break_Space & "G" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E9)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E9) = "1.000" & No_Break_Space & "G" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E9) = "1.000" & No_Break_Space & "G" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E9)");
 
    --  Mega
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E6) = "-1.000" & No_Break_Space & "M" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E6) = "-1.000" & No_Break_Space & "M" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E6)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E6) = "1.000" & No_Break_Space & "M" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E6) = "1.000" & No_Break_Space & "M" & SI_Units.Names.Volt,
       Message => "Float_MI (1.0E6)");
 
    --  kilo
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E3) = "-1.000" & No_Break_Space & "k" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E3) = "-1.000" & No_Break_Space & "k" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E3)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E3) = "1.000" & No_Break_Space & "k" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E3) = "1.000" & No_Break_Space & "k" & SI_Units.Names.Volt,
       Message => "Float_MI (1.0E3)");
 
    --  None
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E0) = "-1.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E0) = "-1.000" & No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E0)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E0) = "1.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E0) = "1.000" & No_Break_Space & SI_Units.Names.Volt,
       Message => "Float_MI (1.0E0)");
 
    --  milli
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-3) = "-1.000" & No_Break_Space & "m" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-3) = "-1.000" & No_Break_Space & "m" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-3)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-3) = "1.000" & No_Break_Space & "m" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-3) = "1.000" & No_Break_Space & "m" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-3)");
 
    --  micro
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-6) = "-1.000" & No_Break_Space & Micro_Sign & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-6) = "-1.000" & No_Break_Space & Micro_Sign &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-6)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-6) = "1.000" & No_Break_Space & Micro_Sign & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-6) = "1.000" & No_Break_Space & Micro_Sign &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-6)");
 
    --  nano
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-9) = "-1.000" & No_Break_Space & "n" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-9) = "-1.000" & No_Break_Space & "n" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-9)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-9) = "1.000" & No_Break_Space & "n" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-9) = "1.000" & No_Break_Space & "n" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-9)");
 
    --  pico
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-12) = "-1.000" & No_Break_Space & "p" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-12) = "-1.000" & No_Break_Space & "p" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-12)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-12) = "1.000" & No_Break_Space & "p" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-12) = "1.000" & No_Break_Space & "p" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-12)");
 
    --  femto
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-15) = "-1.000" & No_Break_Space & "f" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-15) = "-1.000" & No_Break_Space & "f" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-15)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-15) = "1.000" & No_Break_Space & "f" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-15) = "1.000" & No_Break_Space & "f" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-15)");
 
    --  atto
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-18) = "-1.000" & No_Break_Space & "a" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-18) = "-1.000" & No_Break_Space & "a" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-18)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-18) = "1.000" & No_Break_Space & "a" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-18) = "1.000" & No_Break_Space & "a" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-18)");
 
    --  zepto
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-21) = "-1.000" & No_Break_Space & "z" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-21) = "-1.000" & No_Break_Space & "z" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-21)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-21) = "1.000" & No_Break_Space & "z" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-21) = "1.000" & No_Break_Space & "z" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-21)");
 
    --  yocto
    Test_Cases.Add
-     (Passed  => Float_MI (-1.0E-24) = "-1.000" & No_Break_Space & "y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-1.0E-24) = "-1.000" & No_Break_Space & "y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-1.0E-24)");
 
    Test_Cases.Add
-     (Passed  => Float_MI (1.0E-24) = "1.000" & No_Break_Space & "y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (1.0E-24) = "1.000" & No_Break_Space & "y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (1.0E-24)");
 
    --  almost zero, still with (smallest) prefix
    Test_Cases.Add
-     (Passed  => Float_MI (-5.0E-28) = "-0.001" & No_Break_Space & "y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-5.0E-28) = "-0.001" & No_Break_Space & "y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-5.0E-28)");
+
    Test_Cases.Add
-     (Passed  => Float_MI (5.0E-28) = "0.001" & No_Break_Space & "y" & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (5.0E-28) = "0.001" & No_Break_Space & "y" &
+        SI_Units.Names.Volt,
       Message => "Float_MI (5.0E-28)");
 
    --  virtually zero, no prefix
    Test_Cases.Add
-     (Passed  => Float_MI (-4.999_999_999_999_999E-28) = "-0.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (-4.999_999_999_999_999E-28) = "-0.000" & No_Break_Space &
+        SI_Units.Names.Volt,
       Message => "Float_MI (-4.999_999_999_999_999E-28)");
+
    Test_Cases.Add
-     (Passed  => Float_MI (4.999_999_999_999_999E-28) = "0.000" & No_Break_Space & SI_Units.Names.Volt,
+     (Passed  =>
+        Float_MI (4.999_999_999_999_999E-28) = "0.000" & No_Break_Space &
+        SI_Units.Names.Volt,
       Message => "Float_MI (4.999_999_999_999_999E-28)");
 
    --  Scaling tests
@@ -492,8 +599,9 @@ begin
       for To_Prefix in SI_Units.Metric.Scaling.Prefixes loop
          Build_Lookup : -- Calculate expected value by hand.
          declare
-            type Prefix_Matrix is array (SI_Units.Metric.Scaling.Prefixes,
-                                         SI_Units.Metric.Scaling.Prefixes) of Long_Float;
+            type Prefix_Matrix is
+              array (SI_Units.Metric.Scaling.Prefixes,
+                     SI_Units.Metric.Scaling.Prefixes) of Long_Float;
             use all type SI_Units.Metric.Scaling.Prefixes;
             Scale_Lookup : constant Prefix_Matrix :=
               (yocto => (yocto => 1.0E0,
@@ -947,10 +1055,12 @@ begin
                begin
                   if Expected /= 0.0 then
                      Test_Cases.Add
-                       (Passed => Scale_Float (Value       => Origin_Value,
-                                               From_Prefix => From_Prefix,
-                                               To_Prefix   => To_Prefix) = Expected,
-                        Message => "Scale_Float (Value => " & Origin_Value'Image &
+                       (Passed =>
+                          Scale_Float (Value       => Origin_Value,
+                                       From_Prefix => From_Prefix,
+                                       To_Prefix   => To_Prefix) = Expected,
+                        Message =>
+                          "Scale_Float (Value => " & Origin_Value'Image &
                           ", From_Prefix => " & From_Prefix'Image &
                           ", To_Prefix => " & To_Prefix'Image & ")");
                   end if;
@@ -960,25 +1070,36 @@ begin
       end loop;
    end loop;
 
+   pragma Warnings (Off, "static fixed-point value is not a multiple of Small");
    Test_Cases.Add
-     (Passed  => Fixed_MI (Value => 0.55, Aft => 0) = "550.0" & No_Break_Space & "m" & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (Value => 0.55, Aft => 0) = "550.0" & No_Break_Space & "m" &
+        SI_Units.Names.Ampere,
       Message => "Fixed_MI (0.55)");
+
    Test_Cases.Add
-     (Passed  => Fixed_MI (Value => 0.55, Aft => 1) = "550.0" & No_Break_Space & "m" & SI_Units.Names.Ampere,
+     (Passed  =>
+        Fixed_MI (Value => 0.55, Aft => 1) = "550.0" & No_Break_Space & "m" &
+        SI_Units.Names.Ampere,
       Message => "Fixed_MI (0.55)");
+   pragma Warnings (On, "static fixed-point value is not a multiple of Small");
 
    Print_Test_Summary :
    declare
-      Total  : Natural := Test_Cases.Total;
-      Passed : Natural := Test_Cases.Passed;
+      Total  : constant Natural := Test_Cases.Num_Total;
+      Passed : constant Natural := Test_Cases.Num_Passed;
    begin
       Ada.Text_IO.Put_Line
-        ("Test results:" & Passed'Image & " out of" & Total'Image & " succeeded.");
-      Ada.Text_IO.Put_Line (if Passed = Total then "<OK>" else "<FAILED>");
+        (Item =>
+           "Test results:" & Passed'Image & " out of" & Total'Image &
+           " succeeded.");
+      Ada.Text_IO.Put_Line
+        (Item => (if Passed = Total then "<OK>" else "<FAILED>"));
 
-      Ada.Command_Line.Set_Exit_Status (if Passed = Total
-                                        then Ada.Command_Line.Success
-                                        else Ada.Command_Line.Failure);
+      Ada.Command_Line.Set_Exit_Status
+        (Code => (if Passed = Total
+                  then Ada.Command_Line.Success
+                  else Ada.Command_Line.Failure));
    end Print_Test_Summary;
 
 end Main_SI_Units_Test;

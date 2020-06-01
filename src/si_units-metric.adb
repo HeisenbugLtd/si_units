@@ -54,7 +54,8 @@ package body SI_Units.Metric is
    is
       use type Float_IO.General_Float;
 
-      Temp  : Float_IO.General_Float := abs Value; --  Ignore sign for temporary value.
+      Temp  : Float_IO.General_Float := abs Value;
+      --  Ignore sign for temporary value.
       Scale : Prefixes               := None;
    begin
       --  No prefix if no unit is given or value is exactly zero.
@@ -91,7 +92,8 @@ package body SI_Units.Metric is
          else
             Handle_Large_Prefixes :
             declare
-               Threshold : constant Float_IO.General_Float := Magnitude - ((0.1 ** Aft) / 2.0);
+               Threshold : constant Float_IO.General_Float :=
+                 Magnitude - ((0.1 ** Aft) / 2.0);
                --  If the value is greater than that it will be rounded up.
             begin
                Find_Best_Large_Prefix :
@@ -114,7 +116,8 @@ package body SI_Units.Metric is
 
       Convert_To_Postfixed_String :
       declare
-         Result : String (1 .. 5 + Ada.Text_IO.Field'Max (1, Aft)); -- "-999.[...]";
+         Result : String (1 .. 5 + Ada.Text_IO.Field'Max (1, Aft));
+         --  "-999.[...]";
       begin
          Try_Numeric_To_String_Conversion :
          begin
@@ -141,28 +144,32 @@ package body SI_Units.Metric is
       end Convert_To_Postfixed_String;
    end General_Image;
 
-   function Fixed_Image (Value : in Item;
-                         Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
+   function Fixed_Image
+     (Value : in Item;
+      Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
      (General_Image (Value => Float_IO.General_Float (Value),
                      Aft   => Aft,
                      Unit  => Unit));
 
-   function Float_Image (Value : in Item;
-                         Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
+   function Float_Image
+     (Value : in Item;
+      Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
      (General_Image (Value => Float_IO.General_Float (Value),
                      Aft   => Aft,
                      Unit  => Unit));
 
-   function Integer_Image (Value : in Item;
-                           Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
+   function Integer_Image
+     (Value : in Item;
+      Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
      (General_Image (Value => Float_IO.General_Float (Value),
                      Aft   => Aft,
                      Unit  => Unit));
 
-   function Mod_Image (Value : in Item;
-                       Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
-      (General_Image (Value => Float_IO.General_Float (Value),
-                      Aft   => Aft,
-                      Unit  => Unit));
+   function Mod_Image
+     (Value : in Item;
+      Aft   : in Ada.Text_IO.Field := Default_Aft) return String is
+     (General_Image (Value => Float_IO.General_Float (Value),
+                     Aft   => Aft,
+                     Unit  => Unit));
 
 end SI_Units.Metric;

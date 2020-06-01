@@ -5,7 +5,7 @@ abstract project SI_Units_Common is
    for Object_Dir use "obj";
 
    package Compiler is
-      for Switches ("ada") use ("-g", "-gnato", "-fstack-check", "-O2", "-gnatn", "-funroll-loops", "-gnata", "-gnat12", "-gnatw.e", "-gnatyAM80OSabcdefhiklnoprstu");
+      for Switches ("ada") use ("-g", "-gnato", "-fstack-check", "-O2", "-gnatn", "-funroll-loops", "-gnata", "-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu");
    end Compiler;
 
 end SI_Units_Common;
