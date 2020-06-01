@@ -14,12 +14,14 @@ pragma License (Unrestricted);
 --------------------------------------------------------------------------------
 package SI_Units.Metric.Scaling is
 
+   pragma Warnings (Off, "declaration hides ""Prefixes"""); -- intentional
    type Prefixes is (yocto, zepto, atto, femto, pico, nano, micro, milli,
                      centi, deci,
                      None,
                      Deka, Hecto,
                      kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta) with
      Size => Integer'Size;
+   pragma Warnings (On, "declaration hides ""Prefixes""");
    for Prefixes use (yocto => -24,
                      zepto => -21,
                      atto  => -18,
