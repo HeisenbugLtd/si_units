@@ -14,8 +14,10 @@ pragma License (Unrestricted);
 --------------------------------------------------------------------------------
 package SI_Units.Binary.Scaling is
 
+   pragma Warnings (Off, "declaration hides ""Prefixes"""); -- intentional
    type Prefixes is new SI_Units.Binary.Prefixes with
      Size => Integer'Size;
+   pragma Warnings (On, "declaration hides ""Prefixes""");
    for Prefixes use (None =>  0,
                      kibi => 10,
                      mebi => 20,
