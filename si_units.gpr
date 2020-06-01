@@ -2,11 +2,23 @@ with "si_units_common";
 
 project SI_Units is
 
-    for Object_Dir use SI_Units_Common'Object_Dir;
+   for Object_Dir use Si_Units_Common'Object_Dir;
+   for Source_Dirs use ("src", "test");
+   for Main use ("main_si_units_test.adb");
 
-    for Source_Dirs use ("src", "test");
-    for Main use ("main_si_units_test.adb");
+   package Compiler renames Si_Units_Common.Compiler;
 
-    package Compiler renames SI_Units_Common.Compiler;
+   package Builder is
+      for Switches ("ada") use ("-j0", "-g");
+   end Builder;
+
+   package Linker is
+      for Switches ("ada") use ("-g");
+   end Linker;
+
+   package Binder is
+      for Switches ("ada") use ("-E");
+   end Binder;
 
 end SI_Units;
+
