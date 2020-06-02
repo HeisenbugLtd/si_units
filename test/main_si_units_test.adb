@@ -9,7 +9,8 @@ pragma License (Unrestricted);
 
 with Ada.Command_Line;
 with Ada.Text_IO;
-with SI_Units.Binary;
+with SI_Units.Binary.Scaling;
+pragma Unreferenced (SI_Units.Binary.Scaling);
 with SI_Units.Metric.Scaling;
 with SI_Units.Names;
 
