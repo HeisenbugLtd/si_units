@@ -4,8 +4,41 @@ abstract project SI_Units_Common is
    for Source_Dirs use ();
    for Object_Dir use "obj";
 
+   type Build_Type is ("debug", "release");
+
+   Build : Build_Type := external ("build", "release");
+
+   Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu");
+
+   package Builder is
+      case Build is
+         when "debug" =>
+            for Switches ("ada") use ("-g");
+         when "release" =>
+            for Switches ("ada") use ("");
+      end case;
+   end Builder;
+
    package Compiler is
-      for Switches ("ada") use ("-g", "-gnato", "-fstack-check", "-O2", "-gnatn", "-funroll-loops", "-gnata", "-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu");
+      case Build is
+         when "debug" =>
+            for Switches ("ada") use Compiler_Switches & ("-g", "-gnato", "-fstack-check", "-O0", "-gnata");
+         when "release" =>
+            for Switches ("ada") use Compiler_Switches & ("-gnatp", "-O2", "-gnatn", "-funroll-loops");
+      end case;
    end Compiler;
+
+   package Linker is
+      case Build is
+         when "debug" =>
+            for Switches ("ada") use Compiler_Switches & ("-g");
+         when "release" =>
+            for Switches ("ada") use Compiler_Switches & ("");
+      end case;
+   end Linker;
+
+   package Binder is
+      for Switches ("ada") use ("-E");
+   end Binder;
 
 end SI_Units_Common;

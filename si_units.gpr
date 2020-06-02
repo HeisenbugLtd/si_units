@@ -6,19 +6,10 @@ project SI_Units is
    for Source_Dirs use ("src", "test");
    for Main use ("main_si_units_test.adb");
 
-   package Compiler renames Si_Units_Common.Compiler;
-
-   package Builder is
-      for Switches ("ada") use ("-j0", "-g");
-   end Builder;
-
-   package Linker is
-      for Switches ("ada") use ("-g");
-   end Linker;
-
-   package Binder is
-      for Switches ("ada") use ("-E");
-   end Binder;
+   package Compiler renames SI_Units_Common.Compiler;
+   package Builder  renames SI_Units_Common.Builder;
+   package Linker   renames SI_Units_Common.Linker;
+   package Binder   renames SI_Units_Common.Binder;
 
 end SI_Units;
 
