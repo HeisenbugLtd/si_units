@@ -1,24 +1,60 @@
 ![SI Units](https://raw.githubusercontent.com/HeisenbugLtd/heisenbugltd.github.io/master/assets/img/si_units/cover.png)
 
-Utility library to pretty print physical values in properly scaled [metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
+Utility library to pretty print physical values in properly scaled
+[metric (SI) units](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units).
 
 [![Build Linux](https://github.com/HeisenbugLtd/si_units/workflows/Build%20Linux/badge.svg)](https://github.com/HeisenbugLtd/si_units/actions?query=workflow%3A%22Build+Linux%22)
 
 ### Problem
 
-Assuming you're writing software that deals with real world values (like frequency, speed, distance, pressure, etc. pp.), at some point you probably want to print values of such types.  To be nice to the user, such values should be properly formatted.  Ada provides formatting libraries (like `Float_Text_IO`, or even the simple `'Image` attribute) for that purpose, but these do not scale input values, they plainly output whatever you give them in whatever formatting you requested.  So, if you are using a base value of "m" for your distance type, a distance of 42.0 km will be output as something like
+Assuming you're writing software that deals with real world values (like
+frequency, speed, distance, pressure, etc. pp.), at some point you probably
+want to print values of such types.  To be nice to the user, such values should
+be properly formatted.  Ada provides formatting libraries (like
+`Float_Text_IO`, or even the simple `'Image` attribute) for that purpose, but
+these do not scale input values, they plainly output whatever you give them in
+whatever formatting you requested.  So, if you are using a base value of "m"
+for your distance type, a distance of 42.0 km will be output as something like
 
 `42000.000`
 
-by some properly instantiated `Text_IO` package.  Often this is still quite unsatisfactory, especially when dealing with very large or very small values, so that representations with exponents (like `42.424242E-9`) will be used by default.  So, what do you do?  Wrap up your own formatting subprograms, right? No, of course not, not anymore! Instead ...
+by some properly instantiated `Text_IO` package.  Often this is still quite
+unsatisfactory, especially when dealing with very large or very small values,
+so that representations with exponents (like `42.424242E-9`) will be used by
+default.  So, what do you do?  Wrap up your own formatting subprograms, right?
+No, of course not, not anymore! Instead ...
 
 ### Solution
 
-... **Use SI_Units!**  It provides several `Image` function generics for formatting such values.  What it does, is that it takes the given value into consideration before converting it into a string and returning an appropriately formatted string including the prefixed physical unit.
+... **Use SI_Units!**  It provides several `Image` function generics for
+formatting such values.  What it does, is that it takes the given value into
+consideration before converting it into a string and returning an appropriately
+formatted string including the prefixed physical unit.
+
+### Compiling SI_Units
+
+SI_Units is designed as a library to be linked statically.  For this purpose, a
+library project is provided:
+
+```sh
+gprbuild -p -P si_units_lib.gpr
+```
+
+After compilation succeeded, you can install the library in your gnat
+installation like this:
+
+```sh
+gprinstall -p -P si_units_lib.gpr
+```
+
+After that, all you need is to add the line `with "si_units_lib";` to your
+project file and you're ready to go.
+
 
 ### Examples
 
-So, in the above example, you first instantiate an appropriate `Image` subprogram for your `Distance` type:
+So, in the above example, you first instantiate an appropriate `Image`
+subprogram for your `Distance` type:
 
 ```ada
 function Image is new SI_Units.Metric.Float_Image (Item        => Distance,
@@ -26,7 +62,9 @@ function Image is new SI_Units.Metric.Float_Image (Item        => Distance,
                                                    Unit        => SI_Units.Meter);
 ```
 
-This instantiates the subprogram `Image` for the type `Distance`, the default number of digits after the decimal point will be `3` and the unit name is `m` (meter).
+This instantiates the subprogram `Image` for the type `Distance`, the default
+number of digits after the decimal point will be `3` and the unit name is `m`
+(meter).
 
 Then you can call this `Image` instantiated for your `Distance` type like this:
 
@@ -58,7 +96,8 @@ and you'll get:
 
 Neat, isn't it?
 
-`Default_Aft` is merely provided for convenience, the number of digits after the decimal point can be specified for each call to `Image`:
+`Default_Aft` is merely provided for convenience, the number of digits after
+the decimal point can be specified for each call to `Image`:
 
 `Ada.Text_IO.Put_Line (Image (4200.0, Aft => 1));`
 
@@ -70,7 +109,15 @@ instead.
 
 ### (More) Examples
 
-You may have noticed that the instantiation above used a package name `SI_Units.Metric`.  Now, if you'd expect a child package named `Imperial`, you'd be wrong.  After all, the library is called "SI Units", so sorry, I am not supporting things like *foot pound per square inch*.  But, besides decimal prefixes (what it usually called "metric"), there's also an official definition for binary prefixes, good for your Megabits/s (Mebibits/s) connection speed and your Terabytes (Tebibytes) of storage.  So yes, the other child package hierarchy is `SI_Units.Binary` and provides a similar[1] functionality for values that are better written with binary prefixes:
+You may have noticed that the instantiation above used a package name
+`SI_Units.Metric`.  Now, if you'd expect a child package named `Imperial`,
+you'd be wrong.  After all, the library is called "SI Units", so sorry, I am
+not supporting things like *foot pound per square inch*.  But, besides decimal
+prefixes (what it usually called "metric"), there's also an official definition
+for binary prefixes, good for your Megabits/s (Mebibits/s) connection speed and
+your Terabytes (Tebibytes) of storage.  So yes, the other child package
+hierarchy is `SI_Units.Binary` and provides a similar[1] functionality for
+values that are better written with binary prefixes:
 
 ```ada
 function Image is new SI_Units.Binary.Mod_Image (Item        => Transmission_Speed,
@@ -80,14 +127,34 @@ function Image is new SI_Units.Binary.Mod_Image (Item        => Transmission_Spe
 
 ### Scaling support
 
-Sometimes, dealing with inputs from external sources means that values come in different scales than the ones you're using internally.  For instance, the [JSON API from openweathermap.org](https://openweathermap.org/api) returns the atmospheric pressure in hPa (hecto-Pascal), not in the base unit Pa.  Also, SI defines kg as the base unit, not g(ram), so if you're using values in kg within your program, you may need to convert such values to the prefixless version before feeding it to their respective `Image` subprogram.
-We got you covered, `SI_Units.Metric.Scaling` does that for you.  Actually from any prefix into any other prefix.  So, if you need to convert a value given in km into a value in mm, this got you covered.  Just be careful, you may easily exceed the defined range of your type if you scale it around like a mad person.
+Sometimes, dealing with inputs from external sources means that values come in
+different scales than the ones you're using internally.  For instance, the
+[JSON API from openweathermap.org](https://openweathermap.org/api) returns the
+atmospheric pressure in hPa (hecto-Pascal), not in the base unit Pa.  Also, SI
+defines kg as the base unit, not g(ram), so if you're using values in kg within
+your program, you may need to convert such values to the prefixless version
+before feeding it to their respective `Image` subprogram.
+
+We got you covered, `SI_Units.Metric.Scaling` does that for you.  Actually from
+any prefix into any other prefix.  So, if you need to convert a value given in
+km into a value in mm, this got you covered.  Just be careful, you may easily
+exceed the defined range of your type if you scale it around like a mad person.
 
 ### Unit names
 
-Unit names given in instantiations are standard strings, except for a tiny, little `Dynamic_Predicate` that states it can either be completely empty or shall not start with white space.  For any proper use, this predicate can be ignored.  I can't think of any use case that would warrant the use of a vertical tab between the value and the actual unit.  In fact, the `Image` subprograms are designed to work in a way that both will be separated by a non-breaking space for better readability and to confirm with what [SI has to say about it](https://www.nist.gov/pml/weights-and-measures/writing-metric-units).
+Unit names given in instantiations are standard strings, except for a tiny,
+little `Dynamic_Predicate` that states it can either be completely empty or
+shall not start with control characters or white space.  For any proper use,
+this predicate can be ignored.  I can't think of any use case that would
+warrant the use of a vertical tab between the value and the actual unit.  In
+fact, the `Image` subprograms are designed to work in a way that both will be
+separated by a non-breaking space for better readability and to confirm with
+what
+[SI has to say about it](https://www.nist.gov/pml/weights-and-measures/writing-metric-units).
 
-For your convenience, all the names of the SI defined physical units are declared in `SI_Units.Names`.
+For your convenience, all the names of the SI defined physical units are
+declared in `SI_Units.Names`.
 
 
-[1] There are no SI prefixes defined for absolute values less than one, so the support for binary image is currently restricted to natural numbers.
+[1] There are no SI prefixes defined for absolute values less than one, so the
+support for binary image is currently restricted to natural numbers.
