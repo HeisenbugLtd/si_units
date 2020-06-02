@@ -40,26 +40,32 @@ library project is provided:
 gprbuild -p -P si_units_lib.gpr
 ```
 
-After compilation succeeded, you can install the library in your gnat
-installation like this:
+By default this builds an optimized version of the library with all runtime
+checks enabled.  After compilation succeeded, you can install the library in
+your `gnat` installation like this:
 
 ```sh
 gprinstall -p -P si_units_lib.gpr
 ```
 
+Depending on how your GNAT installation is set up, the latter command may
+require elevated privileges to write into the installation directory, so if
+needed, prepend sudo </path/to/gnat/installation/>/bin/ to the gprinstall
+instruction above.
+
 After that, all you need is to add the line `with "si_units_lib";` to your
 project file and you're ready to go.
 
-
 ### Examples
 
-So, in the above example, you first instantiate an appropriate `Image`
-subprogram for your `Distance` type:
+So, in the example from the introductory paragraph, you would first instantiate
+an appropriate `Image` subprogram for your `Distance` type:
 
 ```ada
-function Image is new SI_Units.Metric.Float_Image (Item        => Distance,
-                                                   Default_Aft => 3,
-                                                   Unit        => SI_Units.Meter);
+function Image is new
+   SI_Units.Metric.Float_Image (Item        => Distance,
+                                Default_Aft => 3,
+                                Unit        => SI_Units.Meter);
 ```
 
 This instantiates the subprogram `Image` for the type `Distance`, the default
@@ -120,9 +126,10 @@ hierarchy is `SI_Units.Binary` and provides a similar[1] functionality for
 values that are better written with binary prefixes:
 
 ```ada
-function Image is new SI_Units.Binary.Mod_Image (Item        => Transmission_Speed,
-                                                 Default_Aft => 1,
-                                                 Unit        => "byte/s");
+function Image is new
+  SI_Units.Binary.Mod_Image (Item        => Transmission_Speed,
+                             Default_Aft => 1,
+                             Unit        => "byte/s");
 ```
 
 ### Scaling support
