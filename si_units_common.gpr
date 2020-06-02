@@ -8,7 +8,7 @@ abstract project SI_Units_Common is
 
    Build : Build_Type := external ("build", "release");
 
-   Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu");
+   Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu", "-gnata", "-gnato", "-fstack-check");
 
    package Builder is
       case Build is
@@ -22,9 +22,9 @@ abstract project SI_Units_Common is
    package Compiler is
       case Build is
          when "debug" =>
-            for Switches ("ada") use Compiler_Switches & ("-g", "-gnato", "-fstack-check", "-O0", "-gnata");
+            for Switches ("ada") use Compiler_Switches & ("-g", "-O0");
          when "release" =>
-            for Switches ("ada") use Compiler_Switches & ("-gnatp", "-O2", "-gnatn", "-funroll-loops");
+            for Switches ("ada") use Compiler_Switches & ("-O2", "-gnatn", "-funroll-loops");
       end case;
    end Compiler;
 
