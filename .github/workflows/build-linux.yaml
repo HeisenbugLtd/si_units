@@ -1,0 +1,38 @@
+name: Build Linux
+
+on:
+  push:
+    paths-ignore:
+    - 'LICENSE'
+    - 'README.md'
+    - '_config.yml'
+
+jobs:
+  build:
+    name: CI on ${{ matrix.tag }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        tag:
+          - fsf
+          - community
+        year:
+          - 2019
+          - 2020
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Install toolchain
+        uses: ada-actions/toolchain@dev
+        with:
+          distrib: ${{ matrix.tag }}
+          target: native
+          year: ${{ matrix.year }}
+      - name: Build
+        run: >
+          /usr/bin/env/bash .github/scripts/ci-build.sh
+      - name: Run tests
+        run: >
+          /usr/bin/env/bash .github/scripts/ci-test.sh
