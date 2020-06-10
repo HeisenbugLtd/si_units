@@ -32,7 +32,7 @@ jobs:
           year: ${{ matrix.year }}
       - name: Build
         run: >
-          /usr/bin/env/bash .github/scripts/ci-build.sh
+          bash .github/scripts/ci-build.sh
       - name: Run tests
         run: >
-          /usr/bin/env/bash .github/scripts/ci-test.sh
+          bash .github/scripts/ci-test.sh
