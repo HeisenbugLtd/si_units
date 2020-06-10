@@ -9,13 +9,13 @@ on:
 
 jobs:
   build:
-    name: CI on ${{ matrix.tag }}
+    name: CI on ${{ matrix.tag }} ${{ matrix.year }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         tag:
-          - fsf
+          #- fsf # disabled for now, compilation hangs.
           - community
         year:
           - 2019
