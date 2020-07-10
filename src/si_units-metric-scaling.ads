@@ -19,9 +19,11 @@ package SI_Units.Metric.Scaling is
                      centi, deci,
                      None,
                      Deka, Hecto,
-                     kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta) with
-     Size => Integer'Size;
+                     kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta);
    pragma Warnings (On, "declaration hides ""Prefixes""");
+
+   for Prefixes'Size use Integer'Size;
+
    for Prefixes use (yocto => -24,
                      zepto => -21,
                      atto  => -18,
