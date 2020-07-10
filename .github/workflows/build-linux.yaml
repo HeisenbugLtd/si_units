@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         tag:
-          #- fsf # disabled for now, compilation hangs.
+          - fsf
           - community
         year:
           - 2019
