@@ -155,8 +155,7 @@ shall not start with control characters or white space.  For any proper use,
 this predicate can be ignored.  I can't think of any use case that would
 warrant the use of a vertical tab between the value and the actual unit.  In
 fact, the `Image` subprograms are designed to work in a way that both will be
-separated by a non-breaking space for better readability and to confirm with
-what
+separated by a non-breaking space for better readability and to conform to what
 [SI has to say about it](https://www.nist.gov/pml/weights-and-measures/writing-metric-units).
 
 For your convenience, all the names of the SI defined physical units are
@@ -164,4 +163,4 @@ declared in `SI_Units.Names`.
 
 
 [1] There are no SI prefixes defined for absolute values less than one, so the
-support for binary image is currently restricted to natural numbers.
+support for binary images is currently restricted to natural numbers.
