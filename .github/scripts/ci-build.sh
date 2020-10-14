@@ -15,6 +15,6 @@ echo GNAT VERSION:
 gnatls -v
 echo ............................
 
-# Build library project and then test programs
-gprbuild -j0 -p -P si_units_lib.gpr && \
-gprbuild -j0 -p -P si_units.gpr
+# Build library project and then test program(s)
+gprbuild -j0 -P si_units.gpr && \
+gprbuild -j0 -P test/si_units_test.gpr

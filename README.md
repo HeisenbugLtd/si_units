@@ -37,7 +37,7 @@ SI_Units is designed as a library to be linked statically.  For this purpose, a
 library project is provided:
 
 ```sh
-gprbuild -p -P si_units_lib.gpr
+gprbuild -P si_units.gpr
 ```
 
 By default this builds an optimized version of the library with all runtime
@@ -45,7 +45,7 @@ checks enabled.  After compilation succeeded, you can install the library in
 your `gnat` installation like this:
 
 ```sh
-gprinstall -p -P si_units_lib.gpr
+gprinstall -p -P si_units.gpr
 ```
 
 Depending on how your GNAT installation is set up, the latter command may
@@ -53,8 +53,27 @@ require elevated privileges to write into the installation directory, so if
 needed, prepend sudo </path/to/gnat/installation/>/bin/ to the gprinstall
 instruction above.
 
-After that, all you need is to add the line `with "si_units_lib";` to your
+After that, all you need is to add the line `with "si_units";` to your
 project file and you're ready to go.
+
+#### Tests
+
+You can also build the tests, these are provided in the `test` subdirectory:
+
+```sh
+gprbuild -P test/si_units_test.gpr
+```
+
+After that, an executable `./test/obj/main_si_units_test` should have been
+created which you can run. It should spit out something like
+
+```
+Test results: 9440 out of 9440 succeeded.
+<OK>
+```
+
+If you haven't changed anything in the provided sources, yet the last line of
+the output does not say `<OK>`, but rather `<FAILED>`, you should report a bug.
 
 ### Examples
 

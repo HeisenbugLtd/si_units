@@ -1,15 +1,40 @@
-with "si_units_common";
+library project SI_Units is
 
-project SI_Units is
+   for Languages use ("Ada");
+   for Library_Name use "si_units";
+   for Library_Dir use "lib";
+   for Library_Kind use "static";
+   for Create_Missing_Dirs use "True";
 
-   for Object_Dir use Si_Units_Common'Object_Dir;
-   for Source_Dirs use ("src", "test");
-   for Main use ("main_si_units_test.adb");
+   for Object_Dir use "obj";
+   for Source_Dirs use ("src");
 
-   package Compiler renames SI_Units_Common.Compiler;
-   package Builder  renames SI_Units_Common.Builder;
-   package Linker   renames SI_Units_Common.Linker;
-   package Binder   renames SI_Units_Common.Binder;
+   type Build_Type is ("debug", "release");
+
+   Build_Mode : Build_Type := external ("SI_UNITS_BUILD_MODE", "release");
+
+   Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu", "-gnata", "-gnato", "-fstack-check");
+
+   package Builder is
+      case Build_Mode is
+         when "debug" =>
+            for Switches ("ada") use ("-g");
+         when "release" =>
+            for Switches ("ada") use ("");
+      end case;
+   end Builder;
+
+   package Compiler is
+      case Build_Mode is
+         when "debug" =>
+            for Switches ("ada") use Compiler_Switches & ("-g", "-O0");
+         when "release" =>
+            for Switches ("ada") use Compiler_Switches & ("-O2", "-gnatn", "-funroll-loops");
+      end case;
+   end Compiler;
+
+   package Binder is
+      for Switches ("ada") use ("-E");
+   end Binder;
 
 end SI_Units;
-
