@@ -11,6 +11,3 @@ tags = ["utilities", "formatting"]
 
 [gpr-externals]
 BUILD = ["debug", "release"]
-
-[gpr-set-externals]
-BUILD = "release"
