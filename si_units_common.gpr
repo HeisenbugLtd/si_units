@@ -6,7 +6,7 @@ abstract project SI_Units_Common is
 
    type Build_Type is ("debug", "release");
 
-   Build : Build_Type := external ("build", "release");
+   Build : Build_Type := external ("SI_UNITS_BUILD", "release");
 
    Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu", "-gnata", "-gnato", "-fstack-check");
 
