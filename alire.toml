@@ -1,6 +1,6 @@
 description = "Pretty print physical values in properly scaled metric (SI) units."
 name = "si_units"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Vinzent \"Jellix\" Saranen"]
 website = "https://github.heisenbug.eu/si_units"
 licenses = ["WTFPL"]
