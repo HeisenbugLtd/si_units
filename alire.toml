@@ -6,7 +6,7 @@ website = "https://github.heisenbug.eu/si_units"
 licenses = ["WTFPL"]
 maintainers = ["vinzent@heisenbug.eu"]
 maintainers-logins = ["Jellix"]
-project-files = ["si_units_lib.gpr"]
+project-files = ["si_units.gpr"]
 tags = ["utilities", "formatting"]
 
 [gpr-externals]
