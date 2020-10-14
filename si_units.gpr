@@ -11,7 +11,7 @@ library project SI_Units is
 
    type Build_Type is ("debug", "release");
 
-   Build_Mode : Build_Type := external ("SI_UNIT_BUILD_MODE", "release");
+   Build_Mode : Build_Type := external ("SI_UNITS_BUILD_MODE", "release");
 
    Compiler_Switches := ("-gnat12", "-gnatw.e.Y", "-gnatyAM80OSabcdefhiklnoprstu", "-gnata", "-gnato", "-fstack-check");
 

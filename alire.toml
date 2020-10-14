@@ -10,4 +10,4 @@ project-files = ["si_units.gpr"]
 tags = ["utilities", "formatting"]
 
 [gpr-externals]
-BUILD = ["debug", "release"]
+SI_UNITS_BUILD_MODE = ["debug", "release"]
