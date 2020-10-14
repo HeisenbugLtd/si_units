@@ -1,0 +1,15 @@
+with "../si_units";
+
+project SI_Units_Test is
+
+   for Languages use ("Ada");
+   for Source_Dirs use (".");
+   for Object_Dir use "obj";
+   for Create_Missing_Dirs use "True";
+   for Main use ("main_si_units_test.adb");
+
+   package Compiler renames SI_Units.Compiler;
+   package Builder  renames SI_Units.Builder;
+   package Binder   renames SI_Units.Binder;
+
+end SI_Units_Test;
