@@ -17,14 +17,9 @@ binary prefixes.
 
 See the project's [website](https://github.heisenbug.eu/si_units) for more
 details.
-
-Version 0.2.0 is source code identical to the previous 0.1.3 release, but adds
-full support for Alire integration. In the process, the provided `gnat` project
-files have been streamlined, so if you upgrade to this version from a previous
-release, you will need to adjust your own project files accordingly.
 """
 name = "si_units"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Vinzent \"Jellix\" Saranen"]
 website = "https://github.heisenbug.eu/si_units"
 licenses = ["WTFPL"]
